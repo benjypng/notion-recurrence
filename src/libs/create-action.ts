@@ -5,9 +5,10 @@ export const createAction = async (
   notion: Client,
   title: string,
   date: Date,
+  cuid: string,
 ) => {
   try {
-    return await notion.pages.create({
+    const response = await notion.pages.create({
       parent: {
         type: 'database_id',
         database_id: process.env.ACTIONS_DATABASE_ID as string,
@@ -33,13 +34,15 @@ export const createAction = async (
           rich_text: [
             {
               text: {
-                content: 'Random ID',
+                content: cuid,
               },
             },
           ],
         },
       },
     })
+    console.log('Created actions')
+    return response
   } catch (error) {
     console.log(error)
     throw new Error('Error creating action')

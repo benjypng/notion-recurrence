@@ -1,11 +1,13 @@
-import { AppDataSource as db } from 'src/data-source'
 import { Frequency, RRule } from 'rrule'
+import { AppDataSource as db } from './data-source'
 import dayjs from 'dayjs'
 import { Client } from '@notionhq/client'
 import dotenv from 'dotenv'
+import { createId } from '@paralleldrive/cuid2'
 import { createAction } from './libs/create-action'
 import { NotionProps } from './types'
 import { updateGroupId } from './libs/update-group'
+import { Action } from './entity/EntityAction'
 
 dotenv.config({ path: './.env.development' })
 
@@ -20,6 +22,8 @@ const fxMap = {
 }
 
 const main = async (): Promise<void> => {
+  await db.initialize()
+
   try {
     const { results } = await notion.databases.query({
       database_id: process.env.INDEX_DATABASE_ID as string,
@@ -30,6 +34,8 @@ const main = async (): Promise<void> => {
         },
       },
     })
+
+    if (results.length === 0) throw new Error('All indexes have been created')
 
     for (const result of results) {
       const {
@@ -50,29 +56,31 @@ const main = async (): Promise<void> => {
 
       const allDates: Date[] = rule.all()
 
+      const cuid = createId()
       for (const date of allDates) {
         // Write to Actions
-        const response = await createAction(notion, title[0].plain_text, date)
+        const response = await createAction(
+          notion,
+          title[0].plain_text,
+          date,
+          cuid,
+        )
 
         // Update Index with Group ID
-        updateGroupId(notion, result.id)
+        updateGroupId(notion, result.id, cuid)
 
-        //TODO: Write to DB here
+        const action = db.manager.create(Action, {
+          notion_id: response.id,
+          created_date: new Date(),
+          group_id: cuid,
+        })
+        await db.manager.save(action)
+        console.log(await db.manager.find(Action))
       }
     }
   } catch (e) {
     console.error(e)
-    throw new Error('Error calling Notion API')
   }
-
-  // Pass the notion database id
-  // Search through the database for any acion that does not have a "" property
-  // Get properties from item
-  // Pass properties to rrule to create array of dates
-  // Create group id
-  // Create items in Notion with group id
-  // Store created actions in sqlite db
-  // Create a cli to delete items by passing a delete flag
 }
 
 main()

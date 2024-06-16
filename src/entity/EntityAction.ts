@@ -11,18 +11,12 @@ export class Action extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ unique: true })
+  @Column()
   notion_id: string
 
   @CreateDateColumn()
   created_date: Date
 
-  @Column({ unique: true })
-  group_id: number
-
   @Column()
-  dtstart: Date
-
-  @Column()
-  until: Date
+  group_id: string
 }

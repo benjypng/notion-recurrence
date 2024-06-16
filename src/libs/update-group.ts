@@ -1,9 +1,12 @@
 import { Client } from '@notionhq/client'
-import { createId } from '@paralleldrive/cuid2'
 
-export const updateGroupId = async (notion: Client, pageId: string) => {
+export const updateGroupId = async (
+  notion: Client,
+  pageId: string,
+  cuid: string,
+) => {
   try {
-    return await notion.pages.update({
+    await notion.pages.update({
       page_id: pageId,
       properties: {
         Group: {
@@ -11,13 +14,14 @@ export const updateGroupId = async (notion: Client, pageId: string) => {
             {
               type: 'text',
               text: {
-                content: createId(),
+                content: cuid,
               },
             },
           ],
         },
       },
     })
+    console.log('Completed updating Group ID')
   } catch (error) {
     console.log(error)
     throw new Error('Unable to update Group ID in Index')

@@ -4,7 +4,7 @@ import { Action } from './entity/EntityAction'
 
 export const AppDataSource = new DataSource({
   type: 'sqlite',
-  database: 'database.sqlite',
+  database: 'actions.sqlite',
   synchronize: true,
   logging: false,
   entities: [Action],

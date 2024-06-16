@@ -1,11 +1,11 @@
+import { AppDataSource as db } from 'src/data-source'
 import { Frequency, RRule } from 'rrule'
-import {
-  DatePropertyItemObjectResponse,
-  TextRichTextItemResponse,
-} from '@notionhq/client/build/src/api-endpoints'
 import dayjs from 'dayjs'
 import { Client } from '@notionhq/client'
 import dotenv from 'dotenv'
+import { createAction } from './libs/create-action'
+import { NotionProps } from './types'
+import { updateGroupId } from './libs/update-group'
 
 dotenv.config({ path: './.env.development' })
 
@@ -19,89 +19,47 @@ const fxMap = {
   Monthly: Frequency.MONTHLY,
 }
 
-type NotionProps = {
-  properties: {
-    Name: {
-      title: TextRichTextItemResponse[]
-    }
-    Frequency: {
-      select: {
-        name: 'Daily' | 'Weekly' | 'Monthly'
-      }
-    }
-    Range: DatePropertyItemObjectResponse
-  }
-}
-
-//;(async () => {
-//  await db.initialize()
-//  console.log('DB initialised')
-//})()
-
 const main = async (): Promise<void> => {
   try {
     const { results } = await notion.databases.query({
-      database_id: process.env.DATABASE_ID as string,
+      database_id: process.env.INDEX_DATABASE_ID as string,
       filter: {
-        property: 'Recurring',
-        checkbox: {
-          equals: true,
+        property: 'Group',
+        rich_text: {
+          is_empty: true,
         },
       },
     })
 
-    const {
-      properties: {
-        Name: { title },
-        Frequency: { select },
-        Range: { date },
-      },
-    } = results[0] as unknown as NotionProps
-
-    if (!select || !date) return
-
-    const rule = new RRule({
-      freq: fxMap[select.name],
-      dtstart: dayjs(date.start).toDate(),
-      until: dayjs(date.end).toDate(),
-    })
-
-    const allDates: Date[] = rule.all()
-
-    const response = await notion.pages.create({
-      parent: {
-        type: 'database_id',
-        database_id: process.env.DATABASE_ID as string,
-      },
-      properties: {
-        Name: {
-          title: [
-            {
-              text: {
-                content: title[0].plain_text,
-              },
-            },
-          ],
+    for (const result of results) {
+      const {
+        properties: {
+          Name: { title },
+          Frequency: { select },
+          Range: { date },
         },
-        Date: {
-          type: 'date',
-          date: {
-            start: dayjs(allDates[0]).format('YYYY-MM-DD'),
-          },
-        },
-        Group: {
-          type: 'rich_text',
-          rich_text: [
-            {
-              text: {
-                content: 'Random ID',
-              },
-            },
-          ],
-        },
-      },
-    })
-    console.log(response)
+      } = result as unknown as NotionProps
+
+      if (!select || !date) return
+
+      const rule = new RRule({
+        freq: fxMap[select.name],
+        dtstart: dayjs(date.start).toDate(),
+        until: dayjs(date.end).toDate(),
+      })
+
+      const allDates: Date[] = rule.all()
+
+      for (const date of allDates) {
+        // Write to Actions
+        const response = await createAction(notion, title[0].plain_text, date)
+
+        // Update Index with Group ID
+        updateGroupId(notion, result.id)
+
+        //TODO: Write to DB here
+      }
+    }
   } catch (e) {
     console.error(e)
     throw new Error('Error calling Notion API')

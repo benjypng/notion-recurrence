@@ -1,5 +1,7 @@
 import 'reflect-metadata'
+
 import { DataSource } from 'typeorm'
+
 import { Action } from './entity/EntityAction'
 
 export const AppDataSource = new DataSource({

@@ -3,6 +3,7 @@ bruno
 .vscode/
 node_modules/
 build/
+dist/
 tmp/
 temp/
 .env*

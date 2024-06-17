@@ -53,25 +53,10 @@ const main = async (): Promise<void> => {
     const cuid = createId()
     for (const date of allDates) {
       // Write to Actions
-      const response = await createAction(
-        args,
-        notion,
-        title[0].plain_text,
-        date,
-        cuid,
-      )
+      await createAction(args, notion, title[0].plain_text, date, cuid)
 
       // Update Index with Group ID
       await updateGroupId(notion, result.id, cuid)
-
-      // TODO: Use URL instead of ID when saving to DB
-      const action = db.manager.create(Action, {
-        notion_id: response.id,
-        created_date: new Date(),
-        group_id: cuid,
-      })
-      await db.manager.save(action)
-      console.log(await db.manager.find(Action))
     }
   }
 }

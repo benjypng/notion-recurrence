@@ -4,7 +4,7 @@ Notion currently does not support recurring tasks very well. `notion-recurrence`
 
 # Instructions
 
-## Setting up your Notion databases
+## 1. Setting up your Notion databases
 
 ### Index database
 
@@ -25,3 +25,26 @@ Ensure that the following properties, with the corresponding property type is cr
 |----------|---------------|
 |Name|Leave as default|
 |Date|Date with no end-date|
+
+## 2. Create your index
+
+Using the example "Pay bills", create a page in your`Index database` with the following properties:
+
+- Name: Pay bills
+- Frequency: Monthly
+- Range: 01-01-2024 to 31-12-2024 (assuming task will start on the 1st of the month)
+
+## 3. Setup integration
+
+Log into [Notion - My Integrations](https://www.notion.so/my-integrations) and create your integration. You can name it `Notion Recurrence`. Take note of the `API Secret` as you will need it in the next step.
+
+Go to your `Index database` and `Tasks database` and connect your integration by clicking on the three dots at the top right hand of your database and under `Connections`, choose `Connect To` and the integration that you connected. *You must do this step for both the Index and Tasks databases*.
+
+## 4. Run the script
+
+Prepare the following IDs:
+- Index database ID
+- Tasks database ID
+
+Run the following script:
+`npx notion-recurrence --api=<NOTION API SECRET> --index_db_id=<INDEX DB ID> --actions_db_id=<TASKS DB ID>`

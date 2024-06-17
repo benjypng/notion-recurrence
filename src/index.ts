@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { Client } from '@notionhq/client'
 import { createId } from '@paralleldrive/cuid2'
 import dayjs from 'dayjs'

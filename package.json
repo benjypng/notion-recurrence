@@ -1,16 +1,13 @@
 {
    "name": "notion-recurrence",
-   "version": "1.0.0",
+   "version": "1.0.3",
    "description": "",
    "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1",
-      "build": "tsc && terser ./build/*.js --compress --mangle --output ./build/index.js",
-      "start": "ts-node src/index.ts",
-      "typeorm": "typeorm-ts-node-commonjs",
-      "testargv": "node src/test.js"
+      "build": "tsc",
+      "start": "ts-node src/index.ts"
    },
    "bin": {
-      "notion-recurrence": "./build/index.js"
+      "notion-recurrence": "build/index.js"
    },
    "keywords": [],
    "author": "",
@@ -20,10 +17,7 @@
       "@paralleldrive/cuid2": "^2.2.2",
       "dayjs": "^1.11.11",
       "minimist": "^1.2.8",
-      "reflect-metadata": "^0.1.13",
-      "rrule": "^2.8.1",
-      "sqlite3": "^5.0.2",
-      "typeorm": "0.3.20"
+      "rrule": "^2.8.1"
    },
    "devDependencies": {
       "@eslint/js": "^9.5.0",
@@ -35,7 +29,6 @@
       "eslint-plugin-prettier": "^5.1.3",
       "eslint-plugin-simple-import-sort": "^12.1.0",
       "prettier": "3.3.2",
-      "terser": "^5.31.1",
       "ts-node": "10.9.1",
       "typescript": "^5.4.5",
       "typescript-eslint": "^7.13.0"

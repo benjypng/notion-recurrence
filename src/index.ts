@@ -1,4 +1,4 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env node
 
 import { Client } from '@notionhq/client'
 import { createId } from '@paralleldrive/cuid2'
@@ -7,7 +7,6 @@ import minimist from 'minimist'
 import { Frequency, RRule } from 'rrule'
 
 import { AppDataSource as db } from './data-source'
-import { Action } from './entity/EntityAction'
 import { createAction } from './libs/create-action'
 import { queryActions } from './libs/query-actions'
 import { updateGroupId } from './libs/update-group'

@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env ts-node
 
 import { Client } from '@notionhq/client'
 import { createId } from '@paralleldrive/cuid2'

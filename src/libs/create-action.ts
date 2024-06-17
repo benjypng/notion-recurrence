@@ -10,6 +10,7 @@ export const createAction = async (
   cuid: string,
 ) => {
   try {
+    console.log('Creating action', title)
     const response = await notion.pages.create({
       parent: {
         type: 'database_id',
@@ -43,7 +44,6 @@ export const createAction = async (
         },
       },
     })
-    console.log('Created actions')
     return response
   } catch (error) {
     console.log(error)

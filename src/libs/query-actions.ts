@@ -12,6 +12,7 @@ export const queryActions = async (args: ArgsProps, notion: Client) => {
         },
       },
     })
+    console.log('Results from Index DB', results)
     return results
   } catch (error) {
     throw new Error('Unable to get results')

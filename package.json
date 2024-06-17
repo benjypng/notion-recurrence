@@ -4,9 +4,13 @@
    "description": "",
    "scripts": {
       "test": "echo \"Error: no test specified\" && exit 1",
+      "build": "tsc",
       "start": "ts-node src/index.ts",
       "typeorm": "typeorm-ts-node-commonjs",
       "testargv": "node src/test.js"
+   },
+   "bin": {
+      "notion-recurrence": "./build/index.js"
    },
    "keywords": [],
    "author": "",

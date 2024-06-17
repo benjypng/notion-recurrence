@@ -1,7 +1,7 @@
 import { Client } from '@notionhq/client'
 import { createId } from '@paralleldrive/cuid2'
 import dayjs from 'dayjs'
-import dotenv from 'dotenv'
+import minimist from 'minimist'
 import { Frequency, RRule } from 'rrule'
 
 import { AppDataSource as db } from './data-source'
@@ -9,12 +9,12 @@ import { Action } from './entity/EntityAction'
 import { createAction } from './libs/create-action'
 import { queryActions } from './libs/query-actions'
 import { updateGroupId } from './libs/update-group'
-import { NotionProps } from './types'
+import { ArgsProps, NotionProps } from './types'
 
-dotenv.config({ path: './.env.development' })
+const args = minimist(process.argv.slice(2)) as ArgsProps
 
 const notion = new Client({
-  auth: process.env.NOTION_API,
+  auth: args.api,
 })
 
 const fxMap = {
@@ -26,7 +26,7 @@ const fxMap = {
 const main = async (): Promise<void> => {
   await db.initialize()
 
-  const results = await queryActions(notion)
+  const results = await queryActions(args, notion)
   if (results.length === 0) return
 
   for (const result of results) {
@@ -52,6 +52,7 @@ const main = async (): Promise<void> => {
     for (const date of allDates) {
       // Write to Actions
       const response = await createAction(
+        args,
         notion,
         title[0].plain_text,
         date,
@@ -61,6 +62,7 @@ const main = async (): Promise<void> => {
       // Update Index with Group ID
       await updateGroupId(notion, result.id, cuid)
 
+      // TODO: Use URL instead of ID when saving to DB
       const action = db.manager.create(Action, {
         notion_id: response.id,
         created_date: new Date(),

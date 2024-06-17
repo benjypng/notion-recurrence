@@ -1,7 +1,9 @@
 import { Client } from '@notionhq/client'
 import dayjs from 'dayjs'
+import { ArgsProps } from 'src/types'
 
 export const createAction = async (
+  args: ArgsProps,
   notion: Client,
   title: string,
   date: Date,
@@ -11,7 +13,7 @@ export const createAction = async (
     const response = await notion.pages.create({
       parent: {
         type: 'database_id',
-        database_id: process.env.ACTIONS_DATABASE_ID as string,
+        database_id: args.actions_db_id,
       },
       properties: {
         Name: {

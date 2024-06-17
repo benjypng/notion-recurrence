@@ -11,7 +11,7 @@ Notion currently does not support recurring tasks very well. `notion-recurrence`
 Ensure that the following properties, with the corresponding property type is created. The Notion database needs to be created in a page of its own with no other content. All fields and values are case-sensitive.
 
 | Property | Property Type |
-|=======|============|
+|----------|---------------|
 |Name|Leave as default|
 |Frequency|Select with the following fields: "Daily", Weekly", "Monthly"|
 |Range|Date range with end date selected|
@@ -22,6 +22,6 @@ Ensure that the following properties, with the corresponding property type is cr
 Ensure that the following properties, with the corresponding property type is created. You may add other properties as the script does not need them.
 
 | Property | Property Type |
-|=======|============|
+|----------|---------------|
 |Name|Leave as default|
 |Date|Date with no end-date|

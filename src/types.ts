@@ -1,9 +1,10 @@
 import {
   DatePropertyItemObjectResponse,
+  PartialPageObjectResponse,
   TextRichTextItemResponse,
 } from '@notionhq/client/build/src/api-endpoints'
 
-export type NotionProps = {
+export interface NotionProps extends PartialPageObjectResponse {
   properties: {
     Name: {
       title: TextRichTextItemResponse[]

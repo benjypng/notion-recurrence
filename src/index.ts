@@ -7,6 +7,7 @@ import { Frequency, RRule } from 'rrule'
 import { AppDataSource as db } from './data-source'
 import { Action } from './entity/EntityAction'
 import { createAction } from './libs/create-action'
+import { queryActions } from './libs/query-actions'
 import { updateGroupId } from './libs/update-group'
 import { NotionProps } from './types'
 
@@ -25,62 +26,49 @@ const fxMap = {
 const main = async (): Promise<void> => {
   await db.initialize()
 
-  try {
-    const { results } = await notion.databases.query({
-      database_id: process.env.INDEX_DATABASE_ID as string,
-      filter: {
-        property: 'Group',
-        rich_text: {
-          is_empty: true,
-        },
+  const results = await queryActions(notion)
+  if (results.length === 0) return
+
+  for (const result of results) {
+    const {
+      properties: {
+        Name: { title },
+        Frequency: { select },
+        Range: { date },
       },
+    } = result as NotionProps
+
+    if (!select || !date) return
+
+    const rule = new RRule({
+      freq: fxMap[select.name],
+      dtstart: dayjs(date.start).toDate(),
+      until: dayjs(date.end).toDate(),
     })
 
-    if (results.length === 0) throw new Error('All indexes have been created')
+    const allDates: Date[] = rule.all()
 
-    for (const result of results) {
-      const {
-        properties: {
-          Name: { title },
-          Frequency: { select },
-          Range: { date },
-        },
-      } = result as unknown as NotionProps
+    const cuid = createId()
+    for (const date of allDates) {
+      // Write to Actions
+      const response = await createAction(
+        notion,
+        title[0].plain_text,
+        date,
+        cuid,
+      )
 
-      if (!select || !date) return
+      // Update Index with Group ID
+      await updateGroupId(notion, result.id, cuid)
 
-      const rule = new RRule({
-        freq: fxMap[select.name],
-        dtstart: dayjs(date.start).toDate(),
-        until: dayjs(date.end).toDate(),
+      const action = db.manager.create(Action, {
+        notion_id: response.id,
+        created_date: new Date(),
+        group_id: cuid,
       })
-
-      const allDates: Date[] = rule.all()
-
-      const cuid = createId()
-      for (const date of allDates) {
-        // Write to Actions
-        const response = await createAction(
-          notion,
-          title[0].plain_text,
-          date,
-          cuid,
-        )
-
-        // Update Index with Group ID
-        updateGroupId(notion, result.id, cuid)
-
-        const action = db.manager.create(Action, {
-          notion_id: response.id,
-          created_date: new Date(),
-          group_id: cuid,
-        })
-        await db.manager.save(action)
-        console.log(await db.manager.find(Action))
-      }
+      await db.manager.save(action)
+      console.log(await db.manager.find(Action))
     }
-  } catch (e) {
-    console.error(e)
   }
 }
 

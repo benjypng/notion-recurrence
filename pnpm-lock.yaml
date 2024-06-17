@@ -34,11 +34,14 @@ importers:
         version: 0.3.20(sqlite3@5.1.7)(ts-node@10.9.1(@types/node@16.18.98)(typescript@5.4.5))
     devDependencies:
       '@eslint/js':
-        specifier: ^9.4.0
+        specifier: ^9.5.0
         version: 9.5.0
       '@types/eslint__js':
         specifier: ^8.42.3
         version: 8.42.3
+      '@types/minimist':
+        specifier: ^1.2.5
+        version: 1.2.5
       '@types/node':
         specifier: ^16.11.10
         version: 16.18.98
@@ -60,6 +63,9 @@ importers:
       ts-node:
         specifier: 10.9.1
         version: 10.9.1(@types/node@16.18.98)(typescript@5.4.5)
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
       typescript-eslint:
         specifier: ^7.13.0
         version: 7.13.0(eslint@8.57.0)(typescript@5.4.5)
@@ -191,6 +197,9 @@ packages:
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
+
+  '@types/minimist@1.2.5':
+    resolution: {integrity: sha512-hov8bUuiLiyFPGyFPE1lwWhmzYbirOXQNNo40+y3zow8aFVTeyn3VWL0VFFfdNddA8S4Vf0Tc062rzyNr7Paag==}
 
   '@types/node-fetch@2.6.11':
     resolution: {integrity: sha512-24xFj9R5+rfQJLRyM56qh+wnVSYhyXC2tkoBndtY0U+vubqNsYXGjufB2nn8Q6gt0LrARwL6UBtMCSVCwl4B1g==}
@@ -1525,6 +1534,8 @@ snapshots:
   '@types/estree@1.0.5': {}
 
   '@types/json-schema@7.0.15': {}
+
+  '@types/minimist@1.2.5': {}
 
   '@types/node-fetch@2.6.11':
     dependencies:

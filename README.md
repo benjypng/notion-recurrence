@@ -47,4 +47,6 @@ Prepare the following IDs:
 - Tasks database ID
 
 Run the following script:
-`npx notion-recurrence --api=<NOTION API SECRET> --index_db_id=<INDEX DB ID> --actions_db_id=<TASKS DB ID>`
+```
+npx notion-recurrence --api=<NOTION API SECRET> --index_db_id=<INDEX DB ID> --actions_db_id=<TASKS DB ID>
+```

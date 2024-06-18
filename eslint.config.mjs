@@ -11,6 +11,9 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   prettierConfig,
   {
+    ignores: ['**/build/'],
+  },
+  {
     plugins: {
       'simple-import-sort': simpleImportSort,
     },
